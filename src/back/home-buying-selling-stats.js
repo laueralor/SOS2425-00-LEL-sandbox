@@ -200,15 +200,15 @@ function loadBackendLEL(app){
         );
     });
 
-    // Metodos no permitidos
-    app.all(`${BASE_API}/${RESOURCE}`, (request, response) =>{
-        if (!["GET", "POST", "DELETE"].includes(request.method)){
-            return response.status(405).json({error: "Metodo no permitido."});
+    // Métodos no permitidos
+    app.all(`${BASE_API}/${RESOURCE}`, (req, res) => {
+        if (!["GET", "POST", "DELETE"].includes(req.method)) {
+        return res.status(405).json({ error: "Método no permitido." });
         }
     });
-    app.all(`${BASE_API}/${RESOURCE}/:province/:year`, (request, response) => {
-        if (!["GET", "POST", "DELETE"].includes(request.method)){
-            return response.status(405).json({error: "Metodo no permitido."});
+    app.all(`${BASE_API}/${RESOURCE}/:province/:year`, (req, res) => {
+        if (!["GET", "PUT", "DELETE"].includes(req.method)) {
+        return res.status(405).json({ error: "Método no permitido." });
         }
     });
 }
