@@ -1,6 +1,5 @@
 import express from "express";
-import {loadBackendLEL} from "src/back/home-buying-selling-stats.js";
-app.use(express.json);
+import {loadBackendLEL} from "./src/back/home-buying-selling-stats.js";
 
 
 const app = express();
