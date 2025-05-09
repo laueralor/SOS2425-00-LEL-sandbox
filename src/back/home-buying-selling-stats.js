@@ -118,7 +118,7 @@ function loadBackendLEL(app){
                 if (err) return response.status(500).json({error: "Error al buscar la estadistica."});
                 if (!docs || docs.length === 0) return response.status(404).json({error: "Estadistica no encontrada."});
 
-                
+                const cleanDocs = docs.map(({_id, ...rest}) => rest);
                 response.status(200).json(cleanDocs);
             }
         );
@@ -145,8 +145,8 @@ function loadBackendLEL(app){
 
                 db_LEL.insert(newData, (err, inserted) =>{
                     if (err) return response.status(500).json({error: "Error al insertar datos"});
-                    const cleanDocs = docs.map(({_id, ...rest}) => rest);
-                    response.status(201).json(cleanDocs);
+                    const { _id, ...clean } = inserted;
+                    response.status(201).json(clean);
                 });
             }
         );
