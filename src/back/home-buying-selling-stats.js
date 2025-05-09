@@ -90,6 +90,11 @@ function loadBackendLEL(app){
             });
     });
 
+    // GET - Documentación
+    app.get(`${BASE_API}/${RESOURCE}/docs`, (req, res) => {
+        res.redirect("https://documenter.getpostman.com/view/42241739/2sB2j98UnV");
+    });
+
     //GET - Todos los datos de una provincia
     app.get(`${BASE_API}/${RESOURCE}/:province`, (request, response) => {
         const province = request.params.province;

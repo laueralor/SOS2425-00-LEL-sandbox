@@ -1,0 +1,15 @@
+{
+	"id": "75fa35ad-ec0f-451e-a384-3daa243262f3",
+	"name": "online",
+	"values": [
+		{
+			"key": "BASE_URL",
+			"value": "https://sos2425-00-lel-sandbox.onrender.com",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-05-09T23:09:17.794Z",
+	"_postman_exported_using": "Postman/11.44.6-250509-0720"
+}
