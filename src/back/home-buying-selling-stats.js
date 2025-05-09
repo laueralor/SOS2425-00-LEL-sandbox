@@ -179,7 +179,7 @@ function loadBackendLEL(app){
             (err, numReplaced) => {
                 if (err) return response.status(500).json({error: "Error al actualizar"});
                 if (numReplaced === 0) return response.status(404).json({error: "estadistica no encontrada"});
-                response.status.json(newData);
+                response.status(200).json(newData);
             }
         );
     });
