@@ -7,7 +7,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install dependences
-        run: npm install
+        run: npm ci
       - name: Build front
         run: npm run build
       - name: Run tests
