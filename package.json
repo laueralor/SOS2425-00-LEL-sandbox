@@ -31,6 +31,6 @@
     "nedb": "^1.8.0"
   },
   "devDependencies": {
-    "start-server-and-test": "1.14.0"
+    "start-server-and-test": "^2.0.11"
   }
 }
