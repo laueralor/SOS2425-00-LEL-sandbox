@@ -7,10 +7,11 @@ const PORT = process.env.PORT || 16078;
 
 
 app.use(express.json());
-app.use(handler);
 
 
 loadBackendLEL(app);
+
+app.use(handler);
 
 app.listen(PORT,()=>{
     console.log(`Server running on port ${PORT}!`);
