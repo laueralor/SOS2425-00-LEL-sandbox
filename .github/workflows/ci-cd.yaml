@@ -8,6 +8,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Install dependences
         run: npm ci
+      - name: Build front
+        run: npm run build
       - name: Run tests
         run: npm test
       - name: Deploy to Render
