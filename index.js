@@ -16,5 +16,5 @@ app.get("/", (_, res) => res.sendStatus(200));   // → devuelve 200 OK
 loadBackendLEL(app);
 
 app.listen(PORT,()=>{
-    console.log(`Server running on port ${PORT}!`);
+    console.log(`Server running port ${PORT}!`);
 });
