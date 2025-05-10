@@ -94,7 +94,7 @@
     <div id="pie-container" style="width:100%; height:400px;"></div>
     <p class="highcharts-description">
         Este gráfico muestra cuántas transacciones totales hubo en cada provincia,
-        agrupadas y sumadas desde tu API de compraventa de viviendas.
+        agrupadas y sumadas desde la API de compraventa de viviendas.
     </p>
 </figure>
 
