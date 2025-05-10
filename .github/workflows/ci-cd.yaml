@@ -11,7 +11,7 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Deploy to Render
-        uses: jphnbeynon/render-deploy-action@v0.0.8
+        uses: johnbeynon/render-deploy-action@v0.0.8
         with: 
           service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
           api-key: ${{ secrets.MY_RENDER_API_KEY }}
