@@ -246,8 +246,11 @@
 <h2>Estadísticas de compraventa de viviendas</h2>
 
 <h3>Graficos</h3>
-<Button color="primary" on:click={() => goto('/graph/g1')}>
-  Transacciones Provincia
+<Button color="primary" on:click={() => goto('/graph/pie_highchart')}>
+  Transacciones Totales
+</Button>
+<Button color="primary" on:click={() => goto('/graph/pyramid_amcharts')}>
+  Viviendas Nuevas
 </Button>
 <hr>
 <h3>Búsqueda</h3>
