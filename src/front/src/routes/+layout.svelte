@@ -4,8 +4,8 @@
     let name = 'Vault';
 </script>
 
-<header></header>
+<Header></Header>
 <hr>
     <slot></slot>
 <hr>
-<footer></footer>
+<Footer></Footer>

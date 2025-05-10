@@ -22,3 +22,5 @@
 {"year":2019,"province":"badajoz","transaction_total":5795,"transaction_protected_housing":567,"transaction_new_housing":263,"transaction_secondhand_housing":5532,"_id":"tuUJBYLaCEtp2JSq"}
 {"year":2019,"province":"barcelona","transaction_total":59554,"transaction_protected_housing":1186,"transaction_new_housing":5017,"transaction_secondhand_housing":54537,"_id":"yl6bfSpZlnQSxck0"}
 {"year":2024,"province":"madrid","transaction_total":63218,"transaction_protected_housing":1203,"transaction_new_housing":5720,"transaction_secondhand_housing":57498,"_id":"znReyBgJuxSB38ZL"}
+{"province":"__TEST_PROVINCE__","year":99,"transaction_total":2999,"transaction_protected_housing":56799,"transaction_new_housing":12399,"transaction_secondhand_housing":12399,"_id":"FSrkZPfuE2rHy05t"}
+{"$$deleted":true,"_id":"FSrkZPfuE2rHy05t"}

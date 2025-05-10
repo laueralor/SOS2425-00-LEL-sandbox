@@ -34,6 +34,8 @@
     "nedb": "^1.8.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.17",
     "start-server-and-test": "2.0.11"
   }
 }
