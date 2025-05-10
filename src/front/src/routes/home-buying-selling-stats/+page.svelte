@@ -245,6 +245,11 @@
 
 <h2>Estadísticas de compraventa de viviendas</h2>
 
+<h3>Graficos</h3>
+<Button color="primary" on:click={() => goto('/graph/g1')}>
+  Transacciones Provincia
+</Button>
+<hr>
 <h3>Búsqueda</h3>
 <div class="mb-3">
     <label for="fromYear">Desde el año:</label>
