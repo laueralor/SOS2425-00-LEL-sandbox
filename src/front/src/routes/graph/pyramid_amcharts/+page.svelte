@@ -10,7 +10,7 @@
   import { dev } from '$app/environment';
 
   /* ───────────── CONFIG ───────────── */
-  const YEAR = 2022;                     // ← cámbialo si necesitas otro
+  const YEAR = 2024;                     // ← cambia al año que desees
   let root: any;
   let API = '/api/v1/home-buying-selling-stats';
   if (dev) API = 'http://localhost:16078' + API;
@@ -31,10 +31,10 @@
 
     raw.forEach(r => {
       if (Number(r.year) !== YEAR) return;           // descartar otros años
-      const prov     = String(r.province).toLowerCase();
-      const acc      = grouped[prov] ||= { total:0, second:0, protected:0, new:0 };
+      const prov = String(r.province).toLowerCase();
+      const acc  = grouped[prov] ||= { total:0, second:0, protected:0, new:0 };
       acc.total     += Number(r.transaction_total)               || 0;
-      acc.second    += Number(r.transaction_secondhand)          || 0;
+      acc.second    += Number(r.transaction_secondhand_housing)  || 0;
       acc.protected += Number(r.transaction_protected_housing)   || 0;
       acc.new       += Number(r.transaction_new_housing)         || 0;
     });
@@ -87,8 +87,8 @@
       })
     );
 
-    /* 6) Helper para crear serie */
-    function makeSeries(field: string, name: string, colorIndex: number) {
+    /* 6) Helper para crear serie (sin forzar colores) */
+    function makeSeries(field: string, name: string) {
       const series = chart.series.push(
         am5xy.ColumnSeries.new(root, {
           name,
@@ -96,23 +96,21 @@
           yAxis,
           valueYField: field,
           categoryXField: 'category',
-          clustered: true
+          clustered: true,
+          tooltip: am5.Tooltip.new(root, { labelText: `[bold]{categoryX}[/]\n{name}: {valueY}` })
         })
       );
-      series.columns.template.setAll({
-        tooltipText: `[bold]{categoryX}[/]\n{name}: {valueY}`,
-        width: am5.percent(90)
-      });
+
+      series.columns.template.setAll({ width: am5.percent(90) });
       series.data.setAll(chartData);
-      series.set('fill', root.interfaceColors.get('alternative' + colorIndex));
-      series.set('stroke', root.interfaceColors.get('alternative' + colorIndex));
+      series.appear(600);                // animación de 0,6 s
     }
 
     /* 7) Crear las cuatro series */
-    makeSeries('total',     'Total',               0);
-    makeSeries('second',    'Segunda mano',        1);
-    makeSeries('protected', 'Vivienda protegida',  2);
-    makeSeries('new',       'Obra nueva',          3);
+    makeSeries('total',     'Total');
+    makeSeries('second',    'Segunda mano');
+    makeSeries('protected', 'Vivienda protegida');
+    makeSeries('new',       'Obra nueva');
 
     /* 8) Leyenda */
     chart.children.push(
@@ -139,6 +137,6 @@
 
   <p style="text-align:center; color:#555; margin:1rem 0;">
     Barras agrupadas con los cuatro tipos de transacción para cada provincia
-    (datos {YEAR} API <code>home-buying-selling-stats</code>). Se actualiza cada minuto.
+    (datos {YEAR} de <code>home-buying-selling-stats</code>). Se actualiza cada minuto.
   </p>
 </figure>
