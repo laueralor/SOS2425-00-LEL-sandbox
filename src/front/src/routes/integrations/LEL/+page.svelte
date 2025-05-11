@@ -68,7 +68,7 @@
   <a href="/integrations/LEL/g10-registration-stats">Integración Grupo 10</a>
   <a href="/integrations/LEL/g20-fines">Integración Grupo 20</a>
   <a href="/integrations/LEL/fotocasa">Fotocasa</a>
-  <a href="/integrations/LEL/g11-autonomy-dependence-applications">Integracion Grupo 12</a>
+  <a href="/integrations/LEL/g12-annual-evolutions">Integracion Grupo 12</a>
 </nav>
 
 <hr>
