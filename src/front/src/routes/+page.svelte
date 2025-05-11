@@ -13,7 +13,7 @@
             api: `${baseAPI}/home-buying-selling-stats`,
             postman: "https://documenter.getpostman.com/view/42241739/2sB2j98UnV",
             dataset: "home-buying-selling-stats",
-            integration: ""
+            integration: "/integrations/LEL"
         }
     ];
     const github = "https://github.com/laueralor/SOS2425-00-LEL-sandbox";
