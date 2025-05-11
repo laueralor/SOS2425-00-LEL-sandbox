@@ -109,9 +109,16 @@
   <div id="pyramid-container"
        style="width:100%; height:600px; max-width:820px; margin:0 auto;">
   </div>
+  
 
   <p style="text-align:center; color:#555; margin:1rem 0;">
     Número de anuncios <strong>BUY / HOMES</strong> agrupados por código postal
     (datos de Fotocasa – RapidAPI). Se actualiza cada minuto.
   </p>
 </figure>
+<button
+    on:click={() => (window.location.href = '/integrations/LEL')}
+    style="display:block;margin:20px auto;padding:8px 12px;
+           background:#36A2EB;border:none;border-radius:4px;cursor:pointer;">
+    Volver
+  </button>
