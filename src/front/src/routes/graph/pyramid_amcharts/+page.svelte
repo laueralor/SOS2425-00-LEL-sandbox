@@ -1,7 +1,7 @@
 <svelte:head>
-  <!-- AmCharts 5 -->
+  <!-- AmCharts 5 core + XY + tema Animated -->
   <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
   <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 </svelte:head>
 
@@ -9,93 +9,136 @@
   import { onMount } from 'svelte';
   import { dev } from '$app/environment';
 
+  /* ───────────── CONFIG ───────────── */
+  const YEAR = 2022;                     // ← cámbialo si necesitas otro
   let root: any;
   let API = '/api/v1/home-buying-selling-stats';
-  if (dev) {
-    API = 'http://localhost:16078' + API;
-  }
+  if (dev) API = 'http://localhost:16078' + API;
 
-  async function fetchAndRenderPyramid() {
-    const res = await fetch(API);
+  /* ───────── FUNCIÓN PRINCIPAL ────── */
+  async function fetchAndRenderBar() {
+    const res  = await fetch(API);
     const raw: Array<Record<string, any>> = await res.json();
 
-    // Agrupar y sumar viviendas nuevas por provincia
-    const grouped: Record<string, number> = {};
+    /* 1) Filtrar por año y agrupar por provincia */
+    interface Acc {
+      total: number;
+      second: number;
+      protected: number;
+      new: number;
+    }
+    const grouped: Record<string, Acc> = {};
+
     raw.forEach(r => {
-      const prov = String(r.province).toLowerCase();
-      const v = Number(r.transaction_new_housing) || 0;
-      grouped[prov] = (grouped[prov] || 0) + v;
+      if (Number(r.year) !== YEAR) return;           // descartar otros años
+      const prov     = String(r.province).toLowerCase();
+      const acc      = grouped[prov] ||= { total:0, second:0, protected:0, new:0 };
+      acc.total     += Number(r.transaction_total)               || 0;
+      acc.second    += Number(r.transaction_secondhand)          || 0;
+      acc.protected += Number(r.transaction_protected_housing)   || 0;
+      acc.new       += Number(r.transaction_new_housing)         || 0;
     });
 
-    // Convertir a array y ordenar ASC para invertir la pirámide
-    const pyramidData = Object.entries(grouped)
-      .map(([province, value]) => ({ category: province, value }))
-      .sort((a, b) => a.value - b.value);
+    /* 2) Transformar a array y ordenar por total desc */
+    const chartData = Object.entries(grouped)
+      .map(([province, v]) => ({
+        category: province,
+        total:     v.total,
+        second:    v.second,
+        protected: v.protected,
+        new:       v.new
+      }))
+      .sort((a, b) => b.total - a.total);
 
-    // Destruir anterior instancia si existe
-    if (root) {
-      root.dispose();
-    }
+    /* 3) Destruir gráfico anterior si existe */
+    if (root) root.dispose();
 
-    // Referencias a AmCharts desde window
-    const am5 = (window as any).am5;
-    const am5percent = (window as any).am5percent;
-    const am5themes_Animated = (window as any).am5themes_Animated;
+    /* 4) Instancias AmCharts */
+    const am5      = (window as any).am5;
+    const am5xy    = (window as any).am5xy;
+    const Animated = (window as any).am5themes_Animated;
 
-    // Crear root y tema
-    root = am5.Root.new('pyramid-container');
-    root.setThemes([am5themes_Animated.new(root)]);
+    root = am5.Root.new('bars-container');
+    root.setThemes([Animated.new(root)]);
 
-    // Crear el chart
     const chart = root.container.children.push(
-      am5percent.SlicedChart.new(root, {
+      am5xy.XYChart.new(root, {
+        panX: true,
+        panY: false,
+        wheelX: 'panX',
+        wheelY: 'zoomX',
         layout: root.verticalLayout
       })
     );
 
-    // Serie de tipo funnel (vertical)
-    const series = chart.series.push(
-      am5percent.FunnelSeries.new(root, {
+    /* 5) Ejes */
+    const xAxis = chart.xAxes.push(
+      am5xy.CategoryAxis.new(root, {
         categoryField: 'category',
-        valueField: 'value',
-        orientation: 'vertical',
-        alignLabels: true
+        renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 20 }),
+        tooltip: am5.Tooltip.new(root, {})
+      })
+    );
+    xAxis.data.setAll(chartData);
+
+    const yAxis = chart.yAxes.push(
+      am5xy.ValueAxis.new(root, {
+        renderer: am5xy.AxisRendererY.new(root, {})
       })
     );
 
-    // Etiquetas y tooltips
-    series.labels.template.setAll({
-      text: '{category}'
-    });
-    series.slices.template.setAll({
-      tooltipText: '{category}: {value} viviendas nuevas',
-      interactive: true
-    });
+    /* 6) Helper para crear serie */
+    function makeSeries(field: string, name: string, colorIndex: number) {
+      const series = chart.series.push(
+        am5xy.ColumnSeries.new(root, {
+          name,
+          xAxis,
+          yAxis,
+          valueYField: field,
+          categoryXField: 'category',
+          clustered: true
+        })
+      );
+      series.columns.template.setAll({
+        tooltipText: `[bold]{categoryX}[/]\n{name}: {valueY}`,
+        width: am5.percent(90)
+      });
+      series.data.setAll(chartData);
+      series.set('fill', root.interfaceColors.get('alternative' + colorIndex));
+      series.set('stroke', root.interfaceColors.get('alternative' + colorIndex));
+    }
 
-    // Asignar datos
-    series.data.setAll(pyramidData);
+    /* 7) Crear las cuatro series */
+    makeSeries('total',     'Total',               0);
+    makeSeries('second',    'Segunda mano',        1);
+    makeSeries('protected', 'Vivienda protegida',  2);
+    makeSeries('new',       'Obra nueva',          3);
+
+    /* 8) Leyenda */
+    chart.children.push(
+      am5.Legend.new(root, { centerX: am5.percent(50), x: am5.percent(50) })
+    ).data.setAll(chart.series.values);
   }
 
+  /* ───────────── Ciclo de vida ──────────── */
   onMount(() => {
-    fetchAndRenderPyramid();
-    const interval = setInterval(fetchAndRenderPyramid, 5000);
-    return () => {
-      clearInterval(interval);
-      root && root.dispose();
-    };
+    fetchAndRenderBar().catch(e => alert(e.message));
+    const id = setInterval(fetchAndRenderBar, 60000);   // refresca cada minuto
+    return () => { clearInterval(id); root && root.dispose(); };
   });
 </script>
+
 <figure>
-    <h2 style="text-align:center; margin-top:1rem;">
-        Pirámide Viviendas Nuevas por Provincia
-    </h2>
-    <div
-        id="pyramid-container"
-        style="width:100%; height:600px; max-width:800px; margin:0 auto;"
-    ></div>
-    <p style="text-align:center; color:#555; margin:1rem 0;">
-        Total de viviendas nuevas agrupadas por provincia, ordenadas de menor a mayor.
-    </p>
+  <h2 style="text-align:center; margin-top:1rem;">
+    Transacciones de vivienda por provincia — {YEAR}
+  </h2>
+
+  <div id="bars-container"
+       style="width:100%; height:600px; max-width:900px; margin:0 auto;">
+  </div>
+
+  <p style="text-align:center; color:#555; margin:1rem 0;">
+    Barras agrupadas con los cuatro tipos de transacción para cada provincia
+    (datos {YEAR} API <code>home-buying-selling-stats</code>). Se actualiza cada minuto.
+  </p>
 </figure>
-
-
