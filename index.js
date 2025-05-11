@@ -11,23 +11,27 @@ const PORT = process.env.PORT || 16078;
 app.use(express.json());
 app.use(cors());
 
-// 1) Proxy (registration-stats) → https://sos2425-10.onrender.com
+
 app.use("/api-proxy", (req, res) => {
   if (req.url.startsWith("/api/v1/registrations-stats")) {
     const target = "https://sos2425-10.onrender.com" + req.url;
     return req.pipe(require("request")(target)).pipe(res);
-  } else {
+  } else if (req.url.startsWith("/api/v1/fines")){
+    const target = "https://sos2425-20.onrender.com" + req.url;
+    return req.pipe(require("request")(target)).pipe(res);
+  }
+  else {
     return res.status(404).send("Ruta de proxy no válida");
   }
 });
 
-// 2) Tu API local (home-buying-selling-stats)
+
 loadBackendLEL(app);
 
-// 3) SvelteKit
+
 app.use(handler);
 
-// 4) Arranca
+
 app.listen(PORT, () => {
   console.log(`Server running port ${PORT}!`);
 });
